@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>Dict</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Online Englist Dictionary">
+    <meta name="author" content="yulin.wang">
+    <meta http-equiv="pragma" content="Pragma">
+	<meta http-equiv="cache-control" content="public,max-age=3424528659820">
+	<meta http-equiv="expires" content="30">
+	<link rel="icon" href="http://bootstrap.ninghao.net/assets/ico/apple-touch-icon-144-precomposed.png" type="image/x-icon" />
+	<!-- Le javascript ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="../bootstrap/3.3.2/js/jquery.min.js"></script>
+    <script src="../bootstrap/3.3.2/js/bootstrap-transition.js"></script>
+    <script src="../bootstrap/3.3.2/js/bootstrap-alert.js"></script>
+    <script src="../bootstrap/3.3.2/js/bootstrap-modal.js"></script>
+    <script src="../bootstrap/3.3.2/js/bootstrap-dropdown.js"></script>
+    <script src="../bootstrap/3.3.2/js/bootstrap-scrollspy.js"></script>
+    <script src="../bootstrap/3.3.2/js/bootstrap-tab.js"></script>
+    <script src="../bootstrap/3.3.2/js/bootstrap-tooltip.js"></script>
+    <script src="../bootstrap/3.3.2/js/bootstrap-popover.js"></script>
+    <script src="../bootstrap/3.3.2/js/bootstrap-button.js"></script>
+    <script src="../bootstrap/3.3.2/js/bootstrap-collapse.js"></script>
+    <script src="../bootstrap/3.3.2/js/bootstrap-carousel.js"></script>
+    <script src="../bootstrap/3.3.2/js/bootstrap-typeahead.js"></script>
+	
+    <!-- Le styles -->
+    <link href="../bootstrap/3.3.2/css/bootstrap.css" rel="stylesheet">
+    <style>
+		body {
+			padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+		}
+		
+		.morehover,.unfold,.sound {
+			background-image:url("../bootstrap/3.3.2/img/icon-new.png");
+			background-repeat:no-repeat
+		}
+      
+		.sound.fsound {
+			background-position:-17px -152px
+		}
+		
+		.sound {
+			width:16px;
+			height:16px;
+			margin-left:.5em;
+			display:inline-block;
+			cursor:pointer;
+			overflow:hidden;
+			*zoom:1;
+			*position:inherit;
+			background-position:-17px 0
+		}
+		
+		.playing,.sound:hover {
+			text-decoration:none;
+			background-position:0 0
+		}
+		.playing,.sound.fsound:hover {
+			text-decoration:none;
+			background-position:0 -152px
+		}
+    </style>
+    
+    <link href="../bootstrap/3.3.2/css/bootstrap-responsive.css" rel="stylesheet">
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="assets/js/html5shiv.js"></script>
+    <![endif]-->
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <button type="button" class="btn btn-navbar collapsed" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="brand" href="#">Online English Dictionary</a>
+          <div style="height: 0px;" class="nav-collapse collapse">
+            <ul class="nav">
+              <li class="active"><a href="#">Home</a></li>
+              <li><a href="#contact">Contact</a></li>
+              <li><a href="#about">About</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+    
+    <h1>YuLin Wang 在线英语词典</h1>
+    
+    <!-- <div class="dropdown">
+      <ul class="dropdown-menu" style="display: block;" aria-labelledby="dropdownMenu" role="menu">
+        <li><a href="#" tabindex="-1">动作</a></li>
+        <li class="disabled"><a href="#" tabindex="-1">剧情</a></li>
+        <li><a href="#" tabindex="-1">恐怖</a></li>
+        <li class="divider"></li>
+        <li class="dropdown-submenu"><a href="#" tabindex="-1">更多类型</a>
+        	 <ul class="dropdown-menu">
+				<li><a href="#" tabindex="-1">ABC</a></li>
+			</ul>
+        </li>
+      </ul>
+    </div> -->
+	
+	<div class="input-append">
+		<label for="word_search"><strong>Dict Search: </strong></label> 
+		<input id="word_search" type="text" data-provide="typeahead"><button class="btn btn-success" type="button" onclick="query();">开始<i class="icon-search"></i></button>
+	</div>
+	
+	<div class="bs-docs-grid">
+			<div class="row show-grid">
+              <div class="span4" data-original-title="" title="">
+              	<blockquote>
+              	<p class="lead">
+              		<h3>&nbsp;<span id="word_str"></span></h3>
+              	</p><br>
+              	<p class="lead">
+			       
+              		<div class="row">
+              			<span class="span2" id="word_symbols_en">&nbsp;英&nbsp;</span>
+              			<span class="span2"><i id="testId" class="fsound sound"></i><i class="sound"></i></span>
+              		</div>
+              		
+              		<!-- <button type="button" class="btn btn-default" value="测试发音" onclick="play();" ontouchstart="play();">
+					  <span class="glyphicon glyphicon-volume-down" aria-hidden="false">A</span>
+					</button> -->
+              	</p>
+              	</blockquote>
+              </div>
+              <div class="span6" data-original-title="" title="">
+              	
+              </div>
+            </div>
+            <div class="row show-grid">
+              <div class="span1" data-original-title="" title="">
+              	<div><span class="label label-success">解释 :</span></div>
+              </div>
+              <div class="span9" data-original-title="" title="">
+              	<div class="well well-large">
+	              	<div>
+						<span id="meaning_str"></span>
+					</div>
+				</div>
+              </div>
+            </div>
+            <div class="row show-grid">
+              <div class="span1" data-original-title="" title="">
+              	<div><span class="label label-success">例句 :</span></div>
+              </div>
+              <div class="span9" data-original-title="" title="">
+              	<div class="well well-large">
+	              	<div>
+						<span id="example_str"></span>
+					</div>
+				</div>
+              </div>
+            </div>
+          </div>
+
+	</div><!-- /container -->
+	
+	<div id="footer" style="background-color: #f5f5f5;height: 60px;">
+      <div class="container">
+        <p class="muted credit" style="margin: 20px 0;">Example Dict By <a href="mailto:jieyebing@jmail.com"> Yulin Wang</a>.</p>
+      </div>
+    </div>
+    
+</body>
+</html>
+<script>
+$(document).ready(function($) {
+	$("#word_search").val("");
+	var str = $("#word_search").val();
+	if(str == null || str == ""){
+		
+	}
+	
+	$.fn.typeahead.Constructor.prototype.blur = function() {
+	      var that = this;
+	      setTimeout(function () { that.hide() }, 250);
+	};
+	
+	$('#word_search').typeahead({
+	      source: function(query, process) {
+	    	 var str = $("#word_search").val(); 
+	     	 var data = [];
+	     	 $.get("/springMVC/dict/query",{q:str},function(result){
+	     		    var json = eval(result);
+	     		    for(var i=0; i<json.length; i++)
+	     		    {
+	     		    	data.push(json[i].word);
+	     		    }  
+	     		  process(data);
+	     	 });
+	      },
+	      highlighter: function(item) {
+	         return item;
+	      },
+	      updater: function(item) {
+	    	  $.get("/springMVC/dict/search",{wd:item},function(result){
+	     		   $("#word_str").text(result.word);
+	     		   $("#word_symbols_en").text(result.symbolsEN);
+	     		  
+	     		   $("#meaning_str").html(result.meaning);
+	     		   var newRegExp = new RegExp("/r/n", 'gm');
+	     		   var example = result.example.replace(eval("/"+result.word+"/gi"), "<strong><em>" + result.word + "</em></strong>");
+	     		   var example = example.replace(newRegExp, "<br/>");
+	     		   $("#example_str").html(example);
+	     	 });
+	      return item;
+	}
+	});
+   
+})
+
+function query(){
+	var str = $("#word_search").val(); 
+	$.get("/springMVC/dict/search",{wd:str},function(result){
+		   $("#word_str").text(result.word);
+		   $("#word_symbols_en").text(result.symbolsEN);
+		   $("#meaning_str").html(result.meaning);
+		   var newRegExp = new RegExp("/r/n", 'gm');
+		   var example = result.example.replace(eval("/"+result.word+"/gi"), "<strong><em>" + result.word + "</em></strong>");
+		   var example = example.replace(newRegExp, "<br/>");
+		   $("#example_str").html(example);
+	 });
+}
+
+function play() {
+	var isNSupportFlash = !! document.createElement("audio").canPlayType && document.createElement("audio").canPlayType("audio/mpeg") && navigator.userAgent.indexOf("Maxthon") < 0;
+	if(isNSupportFlash){
+		var mp3="http://127.0.0.1:8080/springMVC/bootstrap/3.3.2/example/hare_US_F.mp3";
+		var sound =  new Audio(mp3);
+		//sound.src = mp3;
+		sound.load();
+		sound.play();
+		//$.fn.sounder(mp3)
+	}
+}
+
+jQuery.fn.extend({
+    drag: function(b) {
+        var c = $(this),
+        a = $(document.body),
+        d = $(window);
+        if (b.mover == undefined) {
+            b.mover = c
+        }
+        if (b.pooler == undefined) {
+            b.pooler = a
+        }
+        if (b.boundary == undefined) {
+            b.boundary = false
+        }
+        if (b.boundary == "document") {
+            b.boundary = a
+        }
+        if (b.deviation == undefined) {
+            b.deviation = {
+                x: 0,
+                y: 0
+            }
+        }
+        c.mousedown(function(j) {
+            var h = j.clientX,
+            g = j.clientY,
+            f = h - b.mover.offset().left,
+            k = g - b.mover.offset().top;
+            b.pooler.mousemove(function(o) {
+                var m = o.clientX,
+                l = o.clientY;
+                if (m != h || l != l) {
+                    var p = m - f + b.deviation.x,
+                    n = l - k + b.deviation.y;
+                    b.mover.css({
+                        left: p,
+                        top: n
+                    })
+                }
+            });
+            a.mouseup(function() {
+                b.pooler.unbind("mousemove")
+            })
+        })
+    },
+    sounder: function(b) {
+        var e = this;
+        if (!window.audios) {
+            window.audios = {}
+        }
+        if (!window.dtype) {
+            window.dtype = jQuery.isMobile || !!(document.createElement("audio").play)
+        }
+        if (!window.ddaudio) {
+            window.ddaudio = window.dtype ? new Audio(b) : jQuery("#daudio").get(0)
+        }
+        if (window.dtype) {
+            window.ddaudio.src = b;
+            window.ddaudio.play()
+        } else {
+            var a = 15,
+            d = function() {
+                try {
+                    window.ddaudio.doPlay(b);
+                    clearTimeout(c)
+                } catch(f) {
+                    c = setTimeout(d, a);
+                    a < 1000 ? a += 15 : clearTimeout(c)
+                }
+            },
+            c = setTimeout(d, a)
+        }
+        return this
+    },
+    stopSound: function() {
+        try {
+            window.dtype ? window.ddaudio.pause() : window.ddaudio.doStop()
+        } catch(a) {}
+        return this
+    }
+});
+
+</script>

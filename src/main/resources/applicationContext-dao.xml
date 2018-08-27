@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:c="http://www.springframework.org/schema/c" xmlns:cache="http://www.springframework.org/schema/cache"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:jms="http://www.springframework.org/schema/jms"
+	xmlns:lang="http://www.springframework.org/schema/lang" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:oxm="http://www.springframework.org/schema/oxm" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:task="http://www.springframework.org/schema/task" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+		http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache-3.2.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
+		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.2.xsd
+		http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.2.xsd
+		http://www.springframework.org/schema/jms http://www.springframework.org/schema/jms/spring-jms-3.2.xsd
+		http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang-3.2.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+		http://www.springframework.org/schema/oxm http://www.springframework.org/schema/oxm/spring-oxm-3.2.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.2.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd" >
+    <!-- default-lazy-init="false",Spring加载整个对象实例图,虽然第一次启动Spring慢,但是提高了后面服务器效率,
+                     因为spring容器第一次启动后已经预初始化了所有的singleton bean(beans下面的某些bean配置了lazy-init="true"的除外) -->
+ 
+    <!-- 1.自动加载使用了注解配置@Service,@Autowired等的所有bean,取代繁琐的xml配置,但是使用了@Controller注解的表现层控制器组件排除 -->
+    <context:annotation-config/>
+    <!-- <context:component-scan base-package="com.vianet.sceportal">
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan> -->
+    
+    <!-- 2.引入属性文件:src下面的jdbc.properties --> 
+    <!-- <context:property-placeholder location="classpath:jdbc.properties"/> -->
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
+        <property name="ignoreResourceNotFound" value="false"/>
+        <property name="locations">
+			<list>
+				<value>classpath:jdbc.properties</value>
+			</list>
+		</property>
+    </bean>
+    
+    <!-- 3.配置sceportal数据源: destroy-method="close",当数据库连接不使用时,就把该连接重新放到数据池中,方便下次使用调用 -->
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close"
+	    p:driverClassName="${jdbc.driverClassName}"
+	    p:url="${jdbc.url}"
+	    p:username="${jdbc.username}"
+	    p:password="${jdbc.password}"
+	    
+	    p:initialSize="${dataSource.initialSize}"
+	    p:minIdle="${dataSource.minIdle}"
+	    p:maxIdle="${dataSource.maxIdle}"
+	    p:maxActive="${dataSource.maxActive}"
+	    p:logAbandoned="${dataSource.logAbandoned}"
+	    p:removeAbandoned="${dataSource.removeAbandoned}"
+	    p:removeAbandonedTimeout="${dataSource.removeAbandonedTimeout}"
+	    p:maxWait="${dataSource.maxWait}"
+	    p:minEvictableIdleTimeMillis="${dataSource.minEvictableIdleTimeMillis}"
+	    p:poolPreparedStatements="${dataSource.poolPreparedStatements}"
+	    p:maxOpenPreparedStatements="${dataSource.maxOpenPreparedStatements}"
+	    p:validationQuery="${dataSource.validationQuery}"
+	    p:testOnBorrow="${dataSource.testOnBorrow}"
+	    p:testOnReturn="${dataSource.testOnReturn}"
+	    p:testWhileIdle="${dataSource.testWhileIdle}"
+	    p:timeBetweenEvictionRunsMillis="${dataSource.timeBetweenEvictionRunsMillis}"
+	    p:numTestsPerEvictionRun="${dataSource.numTestsPerEvictionRun}"/>
+	    
+    <!-- 4.配置james数据源: destroy-method="close",当数据库连接不使用时,就把该连接重新放到数据池中,方便下次使用调用 -->
+	    
+	<!-- 5.配置动态数据源 --> 
+	<!-- <bean id="dynamicDataSource" class="org.apache.commons.dbcp.BasicDataSource">
+		通过key-value的形式关联数据源
+		<property name="targetDataSources">
+			<map>
+				<entry value-ref="dataSource" key="dataSource"></entry>
+			</map>
+		</property>
+		<property name="defaultTargetDataSource" ref="dataSource"></property>
+	</bean>	  -->   
+	    	    
+	<!-- 6.配置动态数据源的hibernate4的SessionFactory -->
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"/>
+		<property name="hibernateProperties">
+		    <props>
+				<prop key="hibernate.dialect">${hibernate.dialect}</prop>
+				<prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+				<prop key="hibernate.format_sql">${hibernate.format_sql}</prop>
+				<prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
+				<!-- 注意:hibernate3使用thread和jta,但是hibernate4使用org.springframework.orm.hibernate4.SpringSessionContext -->
+				<prop key="hibernate.current_session_context_class">org.springframework.orm.hibernate4.SpringSessionContext</prop>
+				<!-- Hibernate分页出现 ResultSet may only be accessed in a forward direction 需要设置hibernate结果集滚动 -->
+				<prop key="jdbc.use_scrollable_resultset">false</prop>
+		    </props>
+		</property>
+		<!-- 自动扫描entity包下面的所有通过注解方式配置的hibernate类文件,在数据库里面生成对应的表 -->
+		<property name="packagesToScan">
+		    <list>
+		        <value>com.wyl.test.entity</value>
+		    </list>
+		</property>
+	</bean>
+	
+	<!-- 7.配置一个事务管理器 -->
+	<bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+    <!-- 8.注解方式配置事务,在service层的实现类的具体某一个方法添加@Transactional,就会自动开启和关闭事务 -->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+    <!-- 上面这种方法是对所有service层的实现类的具体某一个方法添加@Transactional,就会自动开启和关闭事务,
+                     下面是对某些具体某个包下面的某些方法开启和关闭事务 -->
+    <!-- 配置连接点 -->
+    <!-- 
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <tx:method name="save*" propagation="REQUIRED"/>
+            <tx:method name="add*" propagation="REQUIRED" />
+            <tx:method name="update*" propagation="REQUIRED"/>
+            <tx:method name="modify*" propagation="REQUIRED"/>
+            <tx:method name="delete*" propagation="REQUIRED"/>
+            <tx:method name="*" read-only="true"/>
+        </tx:attributes>
+    </tx:advice>    
+    <aop:config>
+    	<aop:advisor advice-ref="txAdvice" pointcut="execution(* org.blackbriar.shiweimall.commons.service.base.impl.*.*(..))"/>
+    	<aop:advisor advice-ref="txAdvice" pointcut="execution(* org.blackbriar.shiweimall.web.service.impl.*.*(..))"/>
+    </aop:config>
+     -->    
+     
+	<!-- <bean name="emailThreadImplDao" class="com.vianet.sceportal.common.dao.impl.EmailThreadImplDao">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean> -->
+	
+	<!--设定为自动代理-->
+	<bean id="autoProxyCreator" class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>
+	<!--负责记录方法的记录时间-->
+	<!-- <bean id="timeHandler" class="com.vianet.sceportal.help.TimeHandler"/> -->
+	<!-- <bean id="timeHandlerAdvisor" class="org.springframework.aop.support.RegexpMethodPointcutAdvisor">
+		<property name="advice">
+			<ref bean="timeHandler"/>
+		</property>
+		对指定类的任何方法有效
+		<property name="patterns">
+			<list>
+				<value>com.vianet.sceportal.usermanagement.*.*</value>
+				<value>com.vianet.sceportal.web.service.*.*</value>
+				<value>com.vianet.sceportal.web.dao.*.*</value>
+				<value>com.vianet.sceportal.restproxy.sender.*.*</value>
+			</list>
+		</property>
+	</bean> -->
+	
+	<!-- <import resource="applicationContext-http.xml"/> -->
+</beans>

@@ -1,0 +1,67 @@
+<!DOCTYPE web-app PUBLIC
+ "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+ "http://java.sun.com/dtd/web-app_2_3.dtd" >
+
+<web-app>
+	<display-name>Archetype Created Web Application</display-name>
+
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>classpath:applicationContext-dao.xml</param-value>
+	</context-param>
+
+	<filter>
+		<filter-name>NoAllowBrowerCacheFilter</filter-name>
+		<filter-class>com.wyl.test.filter.NoAllowBrowerCacheFilter</filter-class>
+		<init-param>
+			<param-name>include</param-name>
+			<param-value>(?i)\\.xml$|.css$|.js$|.png$|.gif$|.jpg$|.json$|.html$</param-value>
+		</init-param>
+	</filter>
+
+	<filter>
+		<filter-name>EncodingFilter</filter-name>
+		<filter-class>com.wyl.test.filter.EncodingFilter</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>utf-8</param-value>
+		</init-param>
+	</filter>
+	<!-- <filter>  
+        <filter-name>gzip</filter-name>  
+        <filter-class>com.wyl.test.filter.GZipFilter</filter-class>  
+    </filter> -->
+
+	<filter-mapping>
+		<filter-name>EncodingFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
+	<filter-mapping>
+		<filter-name>NoAllowBrowerCacheFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<!-- <filter-mapping>
+		<filter-name>gzip</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping> -->
+
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+
+	<servlet>
+		<servlet-name>springMVC</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>classpath*:applicationContext-springmvc.xml</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>springMVC</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+
+</web-app>
