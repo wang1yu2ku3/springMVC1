@@ -2,7 +2,8 @@ package com.wyl.test.constants;
 
 public enum IsBook {
 	YES(1,"是"),
-	NO(2,"否");
+	NO(2,"否"),
+	OOS(3,"缺货");
 	
 	private String name;
 	private int value;
